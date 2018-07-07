@@ -19,7 +19,10 @@ def karatsuba_multiply(ab, cd)
   n1 * (10 ** (l2 * 2)) + (n3 - n2 - n1) * (10 ** l2) + n2
 end
 
-assert_equal karatsuba_multiply(93408737412, 23408237412), 2186533901695262457744
+assert_equal karatsuba_multiply(2, 2), 4
+assert_equal karatsuba_multiply(36, 49), 1764
+assert_equal karatsuba_multiply(1293812, 23408237412), 30285858462494544
+assert_equal karatsuba_multiply(23408237412, 12983), 303909146319996
 
 puts karatsuba_multiply(
   3141592653589793238462643383279502884197169399375105820974944592,
