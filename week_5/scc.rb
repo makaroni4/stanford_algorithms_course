@@ -1,10 +1,11 @@
-require "pp"
 require "set"
 
 graph = {}
 reversed_graph = {}
 
-File.read("small_input.dat")
+puts "--> Reading input"
+
+File.read("input.dat")
     .strip
     .split("\n")
     .each do |row|
@@ -75,20 +76,17 @@ end
 max_node = graph.keys.max
 min_node = graph.keys.min
 
-puts "--> dfs 1"
+puts "--> Running DFS on reversed graph"
+
 max_node.downto(min_node) do |node|
   next unless reversed_graph.has_key?(node)
 
   dfs_one(reversed_graph, node) unless @explored_nodes.member?(node)
 end
 
-# pp @t
-# pp @finishing_time
-# pp @ordered_nodes
-
 @explored_nodes = Set.new
 
-puts "--> dfs 2"
+puts "--> Running DFS on original graph"
 
 while @ordered_nodes.any? do
   node = @ordered_nodes.pop
@@ -103,4 +101,5 @@ scc_sizes = @leaders.keys.map do |leader_node|
   [leader_node, @leaders[leader_node].size]
 end
 
-pp scc_sizes.sort_by(&:last).reverse
+puts "--> Top 5 SCC sizes:"
+p scc_sizes.sort_by(&:last).reverse.first(5).map(&:last)
