@@ -24,52 +24,52 @@ File.read("small_input.dat")
 @leaders = {}
 
 def dfs_one(graph, current_node)
-  @explored_nodes.add(current_node)
   stack = [current_node]
 
   while stack.any? do
     n = stack.pop
 
-    next if graph[n].nil?
+    if @explored_nodes.member?(n)
+      @t += 1
+      @finishing_time[n] = @t
+      @ordered_nodes.push(n)
+    else
+      next if graph[n].nil?
+      @explored_nodes.add(n)
 
-    graph[n].each do |node|
-      unless @explored_nodes.member?(node)
-        stack.push(node)
-        dfs_one(graph, node) unless @explored_nodes.member?(node)
+      nodes_to_explore = graph[n].select do |node|
+        !@explored_nodes.member?(node)
+      end
+
+      if nodes_to_explore.any?
+        stack.push(n)
+        stack.concat(nodes_to_explore)
+      else
+        @t += 1
+        @finishing_time[n] = @t
+        @ordered_nodes.push(n)
       end
     end
   end
-
-  @t += 1
-  @finishing_time[current_node] = @t
-  @ordered_nodes.push(current_node)
 end
 
 def dfs_two(graph, current_node)
-  @explored_nodes.add(current_node)
-  @leaders[@leader_node] ||= []
-  @leaders[@leader_node].push(current_node)
-
   stack = [current_node]
 
   while stack.any? do
     n = stack.pop
 
+    next if @explored_nodes.member?(n)
     next if graph[n].nil?
 
-    graph[n].each do |node|
-      if @explored_nodes.member?(node)
+    @explored_nodes.add(n)
+    @leaders[@leader_node] ||= []
+    @leaders[@leader_node].push(n)
 
-      else
-        stack.push(node)
-        dfs_two(graph, node) unless @explored_nodes.member?(node)
-      end
+    graph[n].each do |node|
+      stack.push(node) unless @explored_nodes.member?(node)
     end
   end
-
-  @t += 1
-  @finishing_time[current_node] = @t
-  @ordered_nodes.push(current_node)
 end
 
 max_node = graph.keys.max
